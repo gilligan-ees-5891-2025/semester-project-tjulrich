@@ -1,0 +1,74 @@
+---
+title: "Put the title of your project here"
+subtitle: "EES 4891/5891: Probability and Statistics for Geosciences"
+author: "Put your name here"
+date: last-modified
+---
+
+## Setup
+
+Set up R environment by loading the necessary libraries
+
+```{r setup}
+#| message: false
+#| warning: false
+#| echo: true
+#| results: "hide"
+library(knitr)
+library(scales)
+library(tidyverse)
+
+# maybe include other libraries:
+# library(tidymodels)
+
+# set up default plotting format for ggplot2 graphs
+theme_set(theme_bw())
+```
+
+## Introduction
+
+Write the introduction: describe what data you're going to study, why you're interested in it, where you obtained the data, and any other relevant background.
+
+### Date set
+
+Describe your data set: what data are you looking at? Where did you get it from (cite publications if relevant), etc. Describe what the data is: what variables are measured, how many observations (rows in a data table) does it contain, etc.
+
+You may want to incude code to read the data in.
+
+## Descriptive Statistics
+
+Put code and text to calculate and present descriptive statistics for your data. This should include histograms and kernel-density plots of the distribution of each variable you will be studying. If you have multivariate data, a pairs plot is helpful for showing the correlations and covariance between different variables.
+
+Describe the probability distribution of the data: is it normal or some other distribution? Histograms and Q-Q plots can be helpful here.
+
+## Research Questions
+
+This is a place to describe the research questions you want to ask about your data.
+
+It's helpful to use tables and/or graphs to illustrate what you're thinking about and what questions you want to ask.
+
+## Hypotheses and Tests
+
+State hypotheses about your data and describe how you will use tests to test the hypotheses
+
+Put code to implement the analysis and hypothesis tests, and include interpretations of thee
+
+### Hypotheses
+
+State your hypothesis or hypotheses
+
+### Methods
+
+Describe the methods you'll use to analyze your data in preparation for testing hypotheses. Include the analysis code.
+
+### Hypothesis Tests
+
+Details about the hypothesis tests, including code
+
+### Results and Discussion
+
+Results from your hypothesis tests and discussion, interpreting your results
+
+## Conclusions
+
+What did you learn? What results would a reader be interested in? What would be the next steps if you were to continue studying this data after the end of the semester?

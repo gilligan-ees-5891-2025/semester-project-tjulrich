@@ -1,0 +1,7 @@
+project:
+  title: "Semester Research Project"
+
+editor: visual
+execute:
+  echo: true
+  cache: false
