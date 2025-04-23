@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Put your name here">
-<meta name="dcterms.date" content="2025-04-08">
+<meta name="author" content="Thomas Ulrich">
+<meta name="dcterms.date" content="2025-04-23">
 
-<title>Put the title of your project here</title>
+<title>Geochemical and Grain size relationships from the Chicama Valley, Peru</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Put the title of your project here</h1>
+<h1 class="title">Geochemical and Grain size relationships from the Chicama Valley, Peru</h1>
 <p class="subtitle lead">EES 4891/5891: Probability and Statistics for Geosciences</p>
 </div>
 
@@ -92,14 +92,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Put your name here </p>
+             <p>Thomas Ulrich </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 8, 2025</p>
+      <p class="date">April 23, 2025</p>
     </div>
   </div>
   
@@ -111,64 +111,1456 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="setup" class="level2">
-<h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<p>Set up R environment by loading the necessary libraries</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># maybe include other libraries:</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># library(tidymodels)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># set up default plotting format for ggplot2 graphs</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># maybe include other libraries:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># set up default plotting format for ggplot2 graphs</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Write the introduction: describe what data you’re going to study, why you’re interested in it, where you obtained the data, and any other relevant background.</p>
-<section id="date-set" class="level3">
-<h3 class="anchored" data-anchor-id="date-set">Date set</h3>
-<p>Describe your data set: what data are you looking at? Where did you get it from (cite publications if relevant), etc. Describe what the data is: what variables are measured, how many observations (rows in a data table) does it contain, etc.</p>
-<p>You may want to incude code to read the data in.</p>
+<p>I have generated XRF data from 12 samples of sediment at various depths from the Holocene stratigraphy of Chicama Valley in Peru (sink samples). Four sediment samples were collected from source areas in the highlands of the Andes. I also ran grain size analysis on these samples so I can pick out patterns for how this material is being sorted in the natural landscape and how that relates to the geochemical data. I am trying to quantify different geochemical signatures of the source-to-sink system, as it has many implications for archeology research in this region (one of the six regions that civilization developed independently). It also has implications for agricultural sustainability, since these cultures have been cultivating this land for many millennia without degrading the soil.</p>
+<section id="data-set" class="level3">
+<h3 class="anchored" data-anchor-id="data-set">Data set</h3>
+<p>The XRF data consists of 18 rows, each row representing one of the 16 samples, with two rows of standards. There are 110 columns, 10 for metadata, 50 with a count in ppm of the concentration of each element that the XRF analysis tests for and 50 for the error of each elemental concentration. The grain size data is similarly narrow and long, but each sample has three measurements and an average (four total measurements per sample). The columns for this data set contain information on the proportion of each grain size relative to the total number of grains (out of 100) in a sample and the percentile information, which gives grain size at D5, D16, D25, D50, D75, D84, D95 and the mode grain size of each sample in μm.</p>
+<p>The data has column names that are too clunky for coding, so I will start by changing the column names of my spreadsheets and removing the unnecessary columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>chicama_seds <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"Chicama_020325_grainsize.xlsx"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `` -&gt; `...3`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename the columns in chicama seds   </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>rename_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(   </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  'phi_10.8' = 'Result In Range  (0.49,0.69) μm',    </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">'phi_9.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (0.69,0.98) μm'</span>,     </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">'phi_8.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (0.98,1.38) μm'</span>,     <span class="st">'phi_8.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1.38,1.95) μm'</span>,     <span class="st">'phi_7.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1.95,2.76) μm'</span>,     <span class="st">'phi_7.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (2.76,3.91) μm'</span>,     <span class="st">'phi_6.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (3.91,5.52) μm'</span>,     <span class="st">'phi_6.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (5.52,7.81) μm'</span>,     <span class="st">'phi_5.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (7.81,11.05) μm'</span>,     <span class="st">'phi_5.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (11.05,15.63) μm'</span>,     <span class="st">'phi_4.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (15.63,22.10) μm'</span>,     <span class="st">'phi_4.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (22.10,31.25) μm'</span>,     <span class="st">'phi_3.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (31.25,44.19) μm'</span>,     <span class="st">'phi_3.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (44.19,62.50) μm'</span>,     <span class="st">'phi_2.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (62.50,88.39) μm'</span>,     <span class="st">'phi_2.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (88.39,125.00) μm'</span>,     <span class="st">'phi_1.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (125.00,176.78) μm'</span>,     <span class="st">'phi_1.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (176.78,250.00) μm'</span>,     <span class="st">'phi_0.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (250.00,353.55) μm'</span>,     <span class="st">'phi_0.2'</span> <span class="ot">=</span> <span class="st">'Result In Range  (353.55,500.00) μm'</span>,     <span class="st">'phi_-0.3'</span> <span class="ot">=</span> <span class="st">'Result In Range  (500.00,707.00) μm'</span>,     <span class="st">'phi_-1.0'</span> <span class="ot">=</span> <span class="st">'Result In Range  (707.00,1000.00) μm'</span>,     <span class="st">'phi_-1.3'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1000.00,1190.00) μm'</span>,     <span class="st">'phi_-1.5'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1190,1410) μm'</span>,     <span class="st">'phi_-1.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1410,1630) μm'</span>,     <span class="st">'phi_-2.0'</span> <span class="ot">=</span> <span class="st">'Result In Range  (1630,2000) μm'</span>,     <span class="st">'phi_-2.3'</span> <span class="ot">=</span> <span class="st">'Result In Range  (2000,2380) μm'</span>,     <span class="st">'phi_-2.5'</span> <span class="ot">=</span> <span class="st">'Result In Range  (2380,2830) μm'</span>,     <span class="st">'phi_-2.7'</span> <span class="ot">=</span> <span class="st">'Result In Range  (2830,3360) μm'</span>,     <span class="st">'sample'</span> <span class="ot">=</span> <span class="st">'Sample Name'</span>,     <span class="st">'index'</span> <span class="ot">=</span> <span class="st">'Index'</span>,     <span class="st">'d32'</span> <span class="ot">=</span> <span class="st">'D [3,2]'</span>,     <span class="st">'mean_size'</span> <span class="ot">=</span> <span class="st">'mean_grain_size'</span>,     <span class="st">'d5'</span> <span class="ot">=</span> <span class="st">'Dx (5)'</span>,     <span class="st">'d16'</span> <span class="ot">=</span> <span class="st">'Dx (16)'</span>,     <span class="st">'d25'</span> <span class="ot">=</span> <span class="st">'Dx (25)'</span>,     <span class="st">'d50'</span> <span class="ot">=</span> <span class="st">'Dx (50)'</span>,     <span class="st">'d75'</span> <span class="ot">=</span> <span class="st">'Dx (75)'</span>,     <span class="st">'d84'</span> <span class="ot">=</span> <span class="st">'Dx (84)'</span>,     <span class="st">'d95'</span> <span class="ot">=</span> <span class="st">'Dx (95)'</span>,     <span class="st">'mode'</span> <span class="ot">=</span> <span class="st">'Mode'</span>      ) </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Use dplyr's rename function to selectively rename columns </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>chicama_seds <span class="ot">&lt;-</span> chicama_seds <span class="sc">%&gt;%</span> <span class="fu">rename</span>(   <span class="st">'phi_10.8'</span> <span class="ot">=</span> <span class="st">'Result In Range  (0.49,0.69) μm'</span> )  </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#assign column names</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>chicama_seds <span class="ot">&lt;-</span> chicama_seds <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="sc">!!!</span>rename_cols)  <span class="do">## select the average grain size distribution of each sample </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>chicama_seds <span class="ot">&lt;-</span> chicama_seds[<span class="fu">grepl</span>(<span class="st">"_AVG"</span>, chicama_seds<span class="sc">$</span>sample, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>), ]  </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="do">## XRF DATA######################################################  </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>chicama_xrf <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"Chicama112324_xrf.xlsx"</span>)  <span class="do">##rename columns </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>chicama_xrf <span class="ot">&lt;-</span> chicama_xrf <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">'Reading No'</span>, <span class="sc">-</span>LOCATION, <span class="sc">-</span>INSPECTOR, <span class="sc">-</span>MISC, <span class="sc">-</span>NOTE)  </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>chicama_xrf <span class="ot">&lt;-</span> chicama_xrf <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Time) </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>chicama_xrf <span class="ot">&lt;-</span> chicama_xrf <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Type, <span class="sc">-</span>Sequence, <span class="sc">-</span>Flags, <span class="sc">-</span>Duration, <span class="sc">-</span>Index, <span class="sc">-</span><span class="st">'XL3-76048'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have friendly column names, we can move on to the descriptive statistics of this data.</p>
 </section>
 </section>
 <section id="descriptive-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="descriptive-statistics">Descriptive Statistics</h2>
-<p>Put code and text to calculate and present descriptive statistics for your data. This should include histograms and kernel-density plots of the distribution of each variable you will be studying. If you have multivariate data, a pairs plot is helpful for showing the correlations and covariance between different variables.</p>
-<p>Describe the probability distribution of the data: is it normal or some other distribution? Histograms and Q-Q plots can be helpful here.</p>
+<p>First I will look at the statistics of the sediment grain sizes</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chicama_seds_stats <span class="ot">&lt;-</span> chicama_seds <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">"phi"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>), <span class="sc">-</span><span class="fu">c</span>(...<span class="dv">3</span>, index,sample,d32)) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">describe</span>(chicama_seds_stats), <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 'xfun::attr()' is deprecated.
+Use 'xfun::attr2()' instead.
+See help("Deprecated")
+
+Warning: 'xfun::attr()' is deprecated.
+Use 'xfun::attr2()' instead.
+See help("Deprecated")</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">vars</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">trimmed</th>
+<th style="text-align: right;">mad</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">range</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">kurtosis</th>
+<th style="text-align: right;">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mean_size</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">122.82</td>
+<td style="text-align: right;">83.78</td>
+<td style="text-align: right;">130.86</td>
+<td style="text-align: right;">119.82</td>
+<td style="text-align: right;">87.89</td>
+<td style="text-align: right;">19.32</td>
+<td style="text-align: right;">259.30</td>
+<td style="text-align: right;">239.99</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">-1.47</td>
+<td style="text-align: right;">23.24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">d5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">15.29</td>
+<td style="text-align: right;">31.93</td>
+<td style="text-align: right;">4.74</td>
+<td style="text-align: right;">6.93</td>
+<td style="text-align: right;">2.94</td>
+<td style="text-align: right;">2.66</td>
+<td style="text-align: right;">119.94</td>
+<td style="text-align: right;">117.27</td>
+<td style="text-align: right;">2.68</td>
+<td style="text-align: right;">5.88</td>
+<td style="text-align: right;">8.86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">d16</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">39.94</td>
+<td style="text-align: right;">53.55</td>
+<td style="text-align: right;">16.19</td>
+<td style="text-align: right;">32.66</td>
+<td style="text-align: right;">16.43</td>
+<td style="text-align: right;">4.86</td>
+<td style="text-align: right;">155.04</td>
+<td style="text-align: right;">150.18</td>
+<td style="text-align: right;">1.41</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">14.85</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">d25</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">58.49</td>
+<td style="text-align: right;">63.09</td>
+<td style="text-align: right;">34.67</td>
+<td style="text-align: right;">51.28</td>
+<td style="text-align: right;">39.83</td>
+<td style="text-align: right;">6.93</td>
+<td style="text-align: right;">189.38</td>
+<td style="text-align: right;">182.46</td>
+<td style="text-align: right;">1.08</td>
+<td style="text-align: right;">-0.42</td>
+<td style="text-align: right;">17.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">d50</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">116.39</td>
+<td style="text-align: right;">88.38</td>
+<td style="text-align: right;">133.47</td>
+<td style="text-align: right;">112.50</td>
+<td style="text-align: right;">127.36</td>
+<td style="text-align: right;">16.86</td>
+<td style="text-align: right;">258.66</td>
+<td style="text-align: right;">241.80</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">-1.68</td>
+<td style="text-align: right;">24.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">d75</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">168.04</td>
+<td style="text-align: right;">112.86</td>
+<td style="text-align: right;">192.98</td>
+<td style="text-align: right;">165.20</td>
+<td style="text-align: right;">161.80</td>
+<td style="text-align: right;">29.13</td>
+<td style="text-align: right;">338.12</td>
+<td style="text-align: right;">308.99</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">-1.77</td>
+<td style="text-align: right;">31.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">d84</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">194.25</td>
+<td style="text-align: right;">125.34</td>
+<td style="text-align: right;">222.97</td>
+<td style="text-align: right;">191.91</td>
+<td style="text-align: right;">173.42</td>
+<td style="text-align: right;">34.65</td>
+<td style="text-align: right;">379.56</td>
+<td style="text-align: right;">344.91</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">-1.76</td>
+<td style="text-align: right;">34.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">d95</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">276.18</td>
+<td style="text-align: right;">166.81</td>
+<td style="text-align: right;">326.46</td>
+<td style="text-align: right;">274.17</td>
+<td style="text-align: right;">189.65</td>
+<td style="text-align: right;">45.23</td>
+<td style="text-align: right;">529.15</td>
+<td style="text-align: right;">483.92</td>
+<td style="text-align: right;">-0.16</td>
+<td style="text-align: right;">-1.58</td>
+<td style="text-align: right;">46.26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mode</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">148.91</td>
+<td style="text-align: right;">94.04</td>
+<td style="text-align: right;">167.55</td>
+<td style="text-align: right;">147.92</td>
+<td style="text-align: right;">113.02</td>
+<td style="text-align: right;">29.37</td>
+<td style="text-align: right;">279.33</td>
+<td style="text-align: right;">249.96</td>
+<td style="text-align: right;">-0.07</td>
+<td style="text-align: right;">-1.84</td>
+<td style="text-align: right;">26.08</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It looks like these samples are mostly in the silt to fine sand category (these measurements are in um).</p>
+<p>For the XRF data statistics, I am removing the elements that are reactive in the environment and will not be helpful for sediment tracing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>chicama_xrf_stats <span class="ot">&lt;-</span> chicama_xrf <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">"error"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>), <span class="sc">-</span><span class="fu">c</span>(Units,SAMPLE,Mn,Fe,Zn,Cu,Cd,Ag,Pb,Ni,As,Re,Ta,Hf))  </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>chicama_xrf_stats <span class="ot">&lt;-</span> chicama_xrf_stats[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>), ]   </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>chicama_xrf_statssheet <span class="ot">&lt;-</span> <span class="fu">describe</span>(chicama_xrf_stats) </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(chicama_xrf_statssheet, <span class="at">digits =</span> <span class="dv">2</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 'xfun::attr()' is deprecated.
+Use 'xfun::attr2()' instead.
+See help("Deprecated")
+
+Warning: 'xfun::attr()' is deprecated.
+Use 'xfun::attr2()' instead.
+See help("Deprecated")</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">vars</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">trimmed</th>
+<th style="text-align: right;">mad</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">range</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">kurtosis</th>
+<th style="text-align: right;">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mo</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4.44</td>
+<td style="text-align: right;">3.06</td>
+<td style="text-align: right;">4.49</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">4.17</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">9.66</td>
+<td style="text-align: right;">9.66</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">-1.20</td>
+<td style="text-align: right;">0.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Zr</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">334.54</td>
+<td style="text-align: right;">251.25</td>
+<td style="text-align: right;">285.65</td>
+<td style="text-align: right;">288.90</td>
+<td style="text-align: right;">70.03</td>
+<td style="text-align: right;">84.43</td>
+<td style="text-align: right;">1223.66</td>
+<td style="text-align: right;">1139.23</td>
+<td style="text-align: right;">2.69</td>
+<td style="text-align: right;">6.88</td>
+<td style="text-align: right;">62.81</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sr</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">187.83</td>
+<td style="text-align: right;">82.09</td>
+<td style="text-align: right;">180.64</td>
+<td style="text-align: right;">185.57</td>
+<td style="text-align: right;">57.63</td>
+<td style="text-align: right;">37.46</td>
+<td style="text-align: right;">369.82</td>
+<td style="text-align: right;">332.36</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">20.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">U</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1.45</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">1.19</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">2.47</td>
+<td style="text-align: right;">-2.01</td>
+<td style="text-align: right;">6.11</td>
+<td style="text-align: right;">8.12</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">-0.63</td>
+<td style="text-align: right;">0.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rb</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">51.44</td>
+<td style="text-align: right;">11.12</td>
+<td style="text-align: right;">51.49</td>
+<td style="text-align: right;">52.10</td>
+<td style="text-align: right;">14.01</td>
+<td style="text-align: right;">28.06</td>
+<td style="text-align: right;">65.55</td>
+<td style="text-align: right;">37.50</td>
+<td style="text-align: right;">-0.27</td>
+<td style="text-align: right;">-0.98</td>
+<td style="text-align: right;">2.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Th</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">10.15</td>
+<td style="text-align: right;">3.68</td>
+<td style="text-align: right;">9.05</td>
+<td style="text-align: right;">9.71</td>
+<td style="text-align: right;">3.03</td>
+<td style="text-align: right;">5.95</td>
+<td style="text-align: right;">20.57</td>
+<td style="text-align: right;">14.61</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">1.38</td>
+<td style="text-align: right;">0.92</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Au</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;">-0.36</td>
+<td style="text-align: right;">5.41</td>
+<td style="text-align: right;">5.77</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">-0.98</td>
+<td style="text-align: right;">0.44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Se</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">2.13</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3.24</td>
+<td style="text-align: right;">3.24</td>
+<td style="text-align: right;">-0.71</td>
+<td style="text-align: right;">-0.39</td>
+<td style="text-align: right;">0.22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hg</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2.74</td>
+<td style="text-align: right;">4.15</td>
+<td style="text-align: right;">2.29</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">4.07</td>
+<td style="text-align: right;">-3.83</td>
+<td style="text-align: right;">9.78</td>
+<td style="text-align: right;">13.60</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">-1.14</td>
+<td style="text-align: right;">1.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">W</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">20.46</td>
+<td style="text-align: right;">12.80</td>
+<td style="text-align: right;">22.93</td>
+<td style="text-align: right;">20.85</td>
+<td style="text-align: right;">12.26</td>
+<td style="text-align: right;">-1.01</td>
+<td style="text-align: right;">36.39</td>
+<td style="text-align: right;">37.40</td>
+<td style="text-align: right;">-0.44</td>
+<td style="text-align: right;">-1.35</td>
+<td style="text-align: right;">3.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Co</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">60.62</td>
+<td style="text-align: right;">59.98</td>
+<td style="text-align: right;">58.01</td>
+<td style="text-align: right;">59.51</td>
+<td style="text-align: right;">46.17</td>
+<td style="text-align: right;">-30.12</td>
+<td style="text-align: right;">166.91</td>
+<td style="text-align: right;">197.02</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">-1.05</td>
+<td style="text-align: right;">15.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cr</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">78.45</td>
+<td style="text-align: right;">75.40</td>
+<td style="text-align: right;">52.56</td>
+<td style="text-align: right;">71.69</td>
+<td style="text-align: right;">68.83</td>
+<td style="text-align: right;">-25.21</td>
+<td style="text-align: right;">276.71</td>
+<td style="text-align: right;">301.92</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">18.85</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">V</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">165.63</td>
+<td style="text-align: right;">188.32</td>
+<td style="text-align: right;">119.30</td>
+<td style="text-align: right;">124.09</td>
+<td style="text-align: right;">34.86</td>
+<td style="text-align: right;">56.49</td>
+<td style="text-align: right;">856.44</td>
+<td style="text-align: right;">799.95</td>
+<td style="text-align: right;">3.04</td>
+<td style="text-align: right;">8.34</td>
+<td style="text-align: right;">47.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ti</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">5450.75</td>
+<td style="text-align: right;">4850.73</td>
+<td style="text-align: right;">4735.61</td>
+<td style="text-align: right;">4490.23</td>
+<td style="text-align: right;">758.83</td>
+<td style="text-align: right;">1333.39</td>
+<td style="text-align: right;">23015.27</td>
+<td style="text-align: right;">21681.88</td>
+<td style="text-align: right;">2.89</td>
+<td style="text-align: right;">7.80</td>
+<td style="text-align: right;">1212.68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sc</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">21.85</td>
+<td style="text-align: right;">59.22</td>
+<td style="text-align: right;">31.83</td>
+<td style="text-align: right;">30.30</td>
+<td style="text-align: right;">32.40</td>
+<td style="text-align: right;">-171.67</td>
+<td style="text-align: right;">97.19</td>
+<td style="text-align: right;">268.86</td>
+<td style="text-align: right;">-1.95</td>
+<td style="text-align: right;">4.41</td>
+<td style="text-align: right;">14.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ca</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">20482.49</td>
+<td style="text-align: right;">14613.38</td>
+<td style="text-align: right;">18192.91</td>
+<td style="text-align: right;">19089.80</td>
+<td style="text-align: right;">9334.12</td>
+<td style="text-align: right;">390.15</td>
+<td style="text-align: right;">60072.51</td>
+<td style="text-align: right;">59682.36</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">3653.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">K</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">11547.68</td>
+<td style="text-align: right;">2293.27</td>
+<td style="text-align: right;">12011.43</td>
+<td style="text-align: right;">11920.14</td>
+<td style="text-align: right;">1861.69</td>
+<td style="text-align: right;">4080.82</td>
+<td style="text-align: right;">13800.20</td>
+<td style="text-align: right;">9719.38</td>
+<td style="text-align: right;">-1.99</td>
+<td style="text-align: right;">4.19</td>
+<td style="text-align: right;">573.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">6441.23</td>
+<td style="text-align: right;">14839.72</td>
+<td style="text-align: right;">657.35</td>
+<td style="text-align: right;">3466.70</td>
+<td style="text-align: right;">594.86</td>
+<td style="text-align: right;">226.07</td>
+<td style="text-align: right;">54299.84</td>
+<td style="text-align: right;">54073.77</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">4.24</td>
+<td style="text-align: right;">3709.93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ba</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">500.37</td>
+<td style="text-align: right;">101.24</td>
+<td style="text-align: right;">496.44</td>
+<td style="text-align: right;">493.47</td>
+<td style="text-align: right;">87.61</td>
+<td style="text-align: right;">354.25</td>
+<td style="text-align: right;">743.07</td>
+<td style="text-align: right;">388.82</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">-0.15</td>
+<td style="text-align: right;">25.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cs</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">68.85</td>
+<td style="text-align: right;">10.08</td>
+<td style="text-align: right;">68.82</td>
+<td style="text-align: right;">68.95</td>
+<td style="text-align: right;">9.39</td>
+<td style="text-align: right;">50.01</td>
+<td style="text-align: right;">86.30</td>
+<td style="text-align: right;">36.29</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">-0.95</td>
+<td style="text-align: right;">2.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Te</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">83.84</td>
+<td style="text-align: right;">19.22</td>
+<td style="text-align: right;">83.03</td>
+<td style="text-align: right;">83.84</td>
+<td style="text-align: right;">23.10</td>
+<td style="text-align: right;">51.11</td>
+<td style="text-align: right;">116.58</td>
+<td style="text-align: right;">65.47</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">-1.26</td>
+<td style="text-align: right;">4.81</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sb</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">30.66</td>
+<td style="text-align: right;">8.83</td>
+<td style="text-align: right;">29.35</td>
+<td style="text-align: right;">30.06</td>
+<td style="text-align: right;">9.67</td>
+<td style="text-align: right;">18.68</td>
+<td style="text-align: right;">51.03</td>
+<td style="text-align: right;">32.36</td>
+<td style="text-align: right;">0.53</td>
+<td style="text-align: right;">-0.47</td>
+<td style="text-align: right;">2.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sn</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">11.77</td>
+<td style="text-align: right;">5.77</td>
+<td style="text-align: right;">11.34</td>
+<td style="text-align: right;">11.85</td>
+<td style="text-align: right;">5.15</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">22.38</td>
+<td style="text-align: right;">22.38</td>
+<td style="text-align: right;">-0.08</td>
+<td style="text-align: right;">-0.55</td>
+<td style="text-align: right;">1.44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pd</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2.61</td>
+<td style="text-align: right;">4.11</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">2.61</td>
+<td style="text-align: right;">2.72</td>
+<td style="text-align: right;">-3.97</td>
+<td style="text-align: right;">9.33</td>
+<td style="text-align: right;">13.31</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">-1.39</td>
+<td style="text-align: right;">1.03</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bal</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">703373.06</td>
+<td style="text-align: right;">37914.22</td>
+<td style="text-align: right;">707626.94</td>
+<td style="text-align: right;">709693.79</td>
+<td style="text-align: right;">18370.57</td>
+<td style="text-align: right;">575683.62</td>
+<td style="text-align: right;">742572.38</td>
+<td style="text-align: right;">166888.75</td>
+<td style="text-align: right;">-2.21</td>
+<td style="text-align: right;">5.21</td>
+<td style="text-align: right;">9478.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nb</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">18.18</td>
+<td style="text-align: right;">12.83</td>
+<td style="text-align: right;">16.37</td>
+<td style="text-align: right;">15.96</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">4.63</td>
+<td style="text-align: right;">62.82</td>
+<td style="text-align: right;">58.19</td>
+<td style="text-align: right;">2.51</td>
+<td style="text-align: right;">6.29</td>
+<td style="text-align: right;">3.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bi</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4.12</td>
+<td style="text-align: right;">6.34</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3.19</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">21.31</td>
+<td style="text-align: right;">21.31</td>
+<td style="text-align: right;">1.28</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">1.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Al</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">29067.80</td>
+<td style="text-align: right;">7950.83</td>
+<td style="text-align: right;">29977.09</td>
+<td style="text-align: right;">29326.73</td>
+<td style="text-align: right;">8252.30</td>
+<td style="text-align: right;">13502.78</td>
+<td style="text-align: right;">41007.73</td>
+<td style="text-align: right;">27504.96</td>
+<td style="text-align: right;">-0.18</td>
+<td style="text-align: right;">-1.04</td>
+<td style="text-align: right;">1987.71</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">802.46</td>
+<td style="text-align: right;">342.47</td>
+<td style="text-align: right;">805.80</td>
+<td style="text-align: right;">827.43</td>
+<td style="text-align: right;">236.20</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1255.32</td>
+<td style="text-align: right;">1255.32</td>
+<td style="text-align: right;">-0.52</td>
+<td style="text-align: right;">-0.27</td>
+<td style="text-align: right;">85.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Si</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">171558.10</td>
+<td style="text-align: right;">30422.88</td>
+<td style="text-align: right;">175833.83</td>
+<td style="text-align: right;">172534.84</td>
+<td style="text-align: right;">30038.83</td>
+<td style="text-align: right;">111235.71</td>
+<td style="text-align: right;">218206.12</td>
+<td style="text-align: right;">106970.41</td>
+<td style="text-align: right;">-0.30</td>
+<td style="text-align: right;">-0.90</td>
+<td style="text-align: right;">7605.72</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cl</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1000.68</td>
+<td style="text-align: right;">2785.95</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">441.43</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">9830.80</td>
+<td style="text-align: right;">9830.80</td>
+<td style="text-align: right;">2.31</td>
+<td style="text-align: right;">3.96</td>
+<td style="text-align: right;">696.49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mg</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2375.46</td>
+<td style="text-align: right;">2590.60</td>
+<td style="text-align: right;">2281.53</td>
+<td style="text-align: right;">1931.68</td>
+<td style="text-align: right;">1073.78</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">10963.79</td>
+<td style="text-align: right;">10963.79</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">4.73</td>
+<td style="text-align: right;">647.65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SiO2</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">367134.35</td>
+<td style="text-align: right;">65104.96</td>
+<td style="text-align: right;">376284.41</td>
+<td style="text-align: right;">369224.57</td>
+<td style="text-align: right;">64283.10</td>
+<td style="text-align: right;">238044.44</td>
+<td style="text-align: right;">466961.12</td>
+<td style="text-align: right;">228916.69</td>
+<td style="text-align: right;">-0.30</td>
+<td style="text-align: right;">-0.90</td>
+<td style="text-align: right;">16276.24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TiO2</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">9102.74</td>
+<td style="text-align: right;">8100.72</td>
+<td style="text-align: right;">7908.46</td>
+<td style="text-align: right;">7498.69</td>
+<td style="text-align: right;">1267.25</td>
+<td style="text-align: right;">2226.76</td>
+<td style="text-align: right;">38435.50</td>
+<td style="text-align: right;">36208.74</td>
+<td style="text-align: right;">2.89</td>
+<td style="text-align: right;">7.80</td>
+<td style="text-align: right;">2025.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fe2O3</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">68438.63</td>
+<td style="text-align: right;">61837.10</td>
+<td style="text-align: right;">54902.01</td>
+<td style="text-align: right;">56382.92</td>
+<td style="text-align: right;">17311.19</td>
+<td style="text-align: right;">17856.33</td>
+<td style="text-align: right;">287800.88</td>
+<td style="text-align: right;">269944.54</td>
+<td style="text-align: right;">2.71</td>
+<td style="text-align: right;">6.96</td>
+<td style="text-align: right;">15459.27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Al2O3</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">54938.14</td>
+<td style="text-align: right;">15027.06</td>
+<td style="text-align: right;">56656.71</td>
+<td style="text-align: right;">55427.53</td>
+<td style="text-align: right;">15596.85</td>
+<td style="text-align: right;">25520.25</td>
+<td style="text-align: right;">77504.62</td>
+<td style="text-align: right;">51984.37</td>
+<td style="text-align: right;">-0.18</td>
+<td style="text-align: right;">-1.04</td>
+<td style="text-align: right;">3756.77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">K2O</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">13972.70</td>
+<td style="text-align: right;">2774.85</td>
+<td style="text-align: right;">14533.83</td>
+<td style="text-align: right;">14423.37</td>
+<td style="text-align: right;">2252.65</td>
+<td style="text-align: right;">4937.79</td>
+<td style="text-align: right;">16698.24</td>
+<td style="text-align: right;">11760.45</td>
+<td style="text-align: right;">-1.99</td>
+<td style="text-align: right;">4.19</td>
+<td style="text-align: right;">693.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CaO</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">28675.49</td>
+<td style="text-align: right;">20458.74</td>
+<td style="text-align: right;">25470.08</td>
+<td style="text-align: right;">26725.72</td>
+<td style="text-align: right;">13067.77</td>
+<td style="text-align: right;">546.21</td>
+<td style="text-align: right;">84101.52</td>
+<td style="text-align: right;">83555.31</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">5114.68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MgO</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">3943.26</td>
+<td style="text-align: right;">4300.39</td>
+<td style="text-align: right;">3787.35</td>
+<td style="text-align: right;">3206.59</td>
+<td style="text-align: right;">1782.48</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">18199.89</td>
+<td style="text-align: right;">18199.89</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">4.73</td>
+<td style="text-align: right;">1075.10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>chicama_Si_avg <span class="ot">=</span> (chicama_xrf_statssheet<span class="sc">$</span>mean[<span class="dv">30</span>] <span class="sc">-</span> chicama_xrf<span class="sc">$</span>Si[<span class="dv">1</span>])<span class="sc">/</span> chicama_xrf<span class="sc">$</span>Si[<span class="dv">1</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>chicama_Al_avg <span class="ot">=</span> (chicama_xrf_statssheet<span class="sc">$</span>mean[<span class="dv">28</span>] <span class="sc">-</span> chicama_xrf<span class="sc">$</span>Al[<span class="dv">1</span>])<span class="sc">/</span> chicama_xrf<span class="sc">$</span>Al[<span class="dv">1</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>chicama_Ti_avg <span class="ot">=</span> (chicama_xrf_statssheet<span class="sc">$</span>mean[<span class="dv">14</span>] <span class="sc">-</span> chicama_xrf<span class="sc">$</span>Ti[<span class="dv">1</span>])<span class="sc">/</span> chicama_xrf<span class="sc">$</span>Ti[<span class="dv">1</span>] </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Ti_median <span class="ot">=</span> (chicama_xrf_statssheet<span class="sc">$</span>median[<span class="dv">14</span>] <span class="sc">-</span> chicama_xrf<span class="sc">$</span>Ti[<span class="dv">1</span>])<span class="sc">/</span> chicama_xrf<span class="sc">$</span>Ti[<span class="dv">1</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>Zr_avg <span class="ot">=</span> (chicama_xrf_statssheet<span class="sc">$</span>mean[<span class="dv">2</span>] <span class="sc">-</span> chicama_xrf<span class="sc">$</span>Zr[<span class="dv">1</span>])<span class="sc">/</span> chicama_xrf<span class="sc">$</span>Zr[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>XRF data</strong></p>
+<p>I will be taking a look at how some of the elemental data compares to the NIST Standard. When standardized, I have values for Si = 1.6430467 , Al = 2.1970863, Ti = 0.4401309, and Zr = 0.9455443. It’s interesting that all three of the mean elemental concentrations in my samples are above the standard. Ti is the closest mean to the standard- lets check out its median compared to the standard: 0.2511851 … That is also close to 0, and so represents the standard well. Now, some kernel density estimates of the main variables I’ll be using.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>chicama_xrf_kde <span class="ot">&lt;-</span> chicama_xrf_stats <span class="sc">%&gt;%</span>   <span class="fu">select</span>(Si, Ti, Al,  Zr) <span class="sc">|&gt;</span>    </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Element"</span>, <span class="at">values_to =</span> <span class="st">"Value"</span>)   </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_xrf_kde, <span class="fu">aes</span>(<span class="at">x =</span> Value, <span class="at">fill =</span> Element, <span class="at">color =</span> Element)) <span class="sc">+</span>   <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span>   </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Element, <span class="at">scales =</span> <span class="st">"free"</span>)<span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kernel Density Estimates of Si, Ti, Al, and Zr"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Concentration (ppm)"</span>,        </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span>   </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span>   </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/Kernel%20Density%20Estimate%20XRF-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It looks like Ti and Zr have a very similar KDE plots, both have high, narrow peaks, meaning the values do not vary widely between samples. This is opposite for the Si and Al kernel densities, as these values vary more widely.</p>
+<p><strong>Grain Size</strong></p>
+<p>I would like to run this same analysis on the mean grain size of my samples. Here are the kernel density estimates of my 13 samples:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chicama_seds_kde <span class="ot">&lt;-</span> chicama_seds  <span class="sc">|&gt;</span>    <span class="fu">select</span>(mean_size) <span class="sc">|&gt;</span>    </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"value"</span>, <span class="at">values_to =</span> <span class="st">"Size"</span>)   </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_seds_kde, <span class="fu">aes</span>(<span class="at">x =</span> Size, <span class="at">fill =</span> value, <span class="at">color =</span> value)) <span class="sc">+</span>   <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kernel Density Estimates of Grain Size"</span>,       </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Grain size in um"</span>,       </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span>   </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span>   </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/KDE%20grain%20size-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This plot shows the wide distribution of sizes. This may be due to the low number of samples, but I would like to compare the grain size for different proxies for grain size to see their correlation. I think it will be best to combine these two separate spreadsheets since they both contain information for the same 16 samples (A1, A2, etc).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove suffixes for matching </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>chicama_seds<span class="sc">$</span>sample_norm <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_CHICAMA_AVG"</span>, <span class="st">""</span>, chicama_seds<span class="sc">$</span>sample)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>chicama_xrf<span class="sc">$</span>sample_norm <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_CHICAMA"</span>, <span class="st">""</span>, chicama_xrf<span class="sc">$</span>SAMPLE)  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a normalized sample name </span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>chicama_combined <span class="ot">&lt;-</span> <span class="fu">merge</span>(chicama_xrf, chicama_seds, <span class="at">by =</span> <span class="st">"sample_norm"</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)  </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#remove the standard readings from the XRF data </span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>chicama_combined <span class="ot">&lt;-</span> chicama_combined[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">18</span>), ] </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#only select the columns I want for correlation </span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>chicama_combined_corr <span class="ot">&lt;-</span> chicama_combined <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">c</span>(Si, Ti, Zr, Al, mean_size, d50, sample_norm))  </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#add columns for the grain_size proxy ratios </span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>chicama_combined_corr <span class="ot">&lt;-</span> chicama_combined_corr <span class="sc">|&gt;</span>   </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(     <span class="at">Ti_Si =</span> Ti <span class="sc">/</span> Si,    </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">Al_Si =</span> Al <span class="sc">/</span> Si,     </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">Ti_Zr =</span> Ti <span class="sc">/</span> Zr   )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I have included the ratios because they should hopefully be able to correlate elemental concentrations to grain size. high ratios should show a high proportion of fine material (clays) compared with low values that should correlate to coarser samples. Now, let’s plot their 2D density plot to show how they correlate.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Si/Ti against grain size </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Ti_Si, <span class="at">y =</span> mean_size)) <span class="sc">+</span>   <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>   </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>   </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span>   </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Ti/Si vs Grain Size"</span>,        </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Ti/Si Ratio"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/2D%20density%20plots-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Zr/Ti against mean grain size </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Ti_Zr, <span class="at">y =</span> mean_size)) <span class="sc">+</span>   <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>   </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>   </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>( <span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span>   </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Zr/Ti vs Grain Size"</span>,       </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Ti/Zr Ratio"</span>, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).
+Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/2D%20density%20plots-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Al/Si against mean grain size </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Al_Si, <span class="at">y =</span> mean_size)) <span class="sc">+</span>   <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>  </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>( <span class="at">option =</span> <span class="st">"turbo"</span>) <span class="sc">+</span>   </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Al_Si vs Grain Size"</span>,        </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Al_Si Ratio"</span>, </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).
+Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/2D%20density%20plots-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These do not show a great relationship at all! Maybe plotting them versus median grain size will be better:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Si/Ti against grain size </span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Ti_Si, <span class="at">y =</span> d50)) <span class="sc">+</span>   </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>   </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span>   </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Si/Ti vs Grain Size (Median)"</span>,       </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Si/Ti Ratio"</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/median%20grain%20size%20correlations-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Zr/Ti against mean grain size </span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Ti_Zr, <span class="at">y =</span> d50)) <span class="sc">+</span>   </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>   </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>   </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>( <span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span>  </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>  </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Zr/Ti vs Grain Size (median)"</span>,       </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Zr/Ti Ratio"</span>, </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).
+Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/median%20grain%20size%20correlations-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Al/Si against mean grain size </span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined_corr, <span class="fu">aes</span>(<span class="at">x =</span> Al_Si, <span class="at">y =</span> d50)) <span class="sc">+</span>   </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_2d_filled</span>() <span class="sc">+</span>   </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>( <span class="at">option =</span> <span class="st">"turbo"</span>) <span class="sc">+</span>   </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>   </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span>   </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"2D Density of Al_Si vs Grain Size (median)"</span>,       </span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Al_Si Ratio"</span>, </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Grain Size (um)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_density2d_filled()`).
+Removed 3 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/median%20grain%20size%20correlations-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These ratios still show very weak correlation. How should I find which elements correlate to grain size? I think I will try to uncover that question with this project.</p>
 </section>
 <section id="research-questions" class="level2">
 <h2 class="anchored" data-anchor-id="research-questions">Research Questions</h2>
-<p>This is a place to describe the research questions you want to ask about your data.</p>
-<p>It’s helpful to use tables and/or graphs to illustrate what you’re thinking about and what questions you want to ask.</p>
+<p>For this project, I’d like to test how different elements are related to grain size. Specifically, how well elemental concentrations of non reactive elements in the soil samples correlate with average grain size from each sample. For this, I will be running a principal component analysis (PCA) on multiple elements and comparing them to the different size fractions of grains (clay/silt, fine sand, and sand).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create categories for grain size </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>chicama_combined <span class="ot">&lt;-</span> chicama_combined <span class="sc">|&gt;</span>    </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">GrainSizeCategory =</span> <span class="fu">case_when</span>(     </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    d50 <span class="sc">&lt;</span> <span class="dv">63</span> <span class="sc">~</span> <span class="st">"Clay/Silt"</span>,              </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    d50 <span class="sc">&lt;</span> <span class="dv">200</span> <span class="sc">~</span> <span class="st">"Fine Sand"</span>,          </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    d50 <span class="sc">&lt;</span> <span class="dv">500</span> <span class="sc">~</span> <span class="st">"Medium Sand"</span>,          </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"N/A"</span>   )) </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="do">## #Select  geochemical columns</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>pca_data <span class="ot">&lt;-</span> chicama_combined <span class="sc">|&gt;</span>    </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Si, Ti, Al, Zr, Sr, Ca, Mo, Rb, Se, W, Co, Cr, V, Sc, K, Ba, Cs,           Bi, Te, Sb, Sn, Pd, Nb, P, Cl, Mg )    </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the data  </span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>pca_data_scaled <span class="ot">&lt;-</span> <span class="fu">scale</span>(pca_data)  </span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  Run PCA </span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(pca_data_scaled, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span> )  </span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co"># graphs </span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(pca_result,                  </span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"var"</span>,                 </span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">habillage =</span> chicama_combined<span class="sc">$</span>GrainSizeCategory,</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">addEllipses =</span> <span class="cn">TRUE</span>,                 </span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">palette =</span> <span class="st">"Set2"</span>,                 </span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Too few points to calculate an ellipse
+Too few points to calculate an ellipse</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/PCA-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>After analyzing the output from the PCA, I think I will now test the elements with the longer arrows in the direction of the fine sands <strong>Sn</strong>, and <strong>Te.</strong> I will also test two variables with a stronger direction in the clay/silt direction: <strong>Sc</strong> and <strong>Mo.</strong> This allows me four possible elements positively and negatively correlated with different grain sizes according to the PCA output.</p>
+<p>By plotting the outputs of the PCA (loadings), this will give us a better idea if these were the best choices</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>loadings <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_result<span class="sc">$</span>rotation)  </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add element names as a column </span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>loadings<span class="sc">$</span>Element <span class="ot">&lt;-</span> <span class="fu">rownames</span>(loadings)  </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>loadings_long <span class="ot">&lt;-</span> loadings <span class="sc">|&gt;</span>    </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Element, PC1, PC2) <span class="sc">|&gt;</span>    </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"PC"</span>), <span class="at">names_to =</span> <span class="st">"Component"</span>, <span class="at">values_to =</span> <span class="st">"Loading"</span>)  </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(loadings_long, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Element, Loading), <span class="at">y =</span> Loading, <span class="at">fill =</span> Component)) <span class="sc">+</span>   </span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>() <span class="sc">+</span>   </span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span>   </span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> Component, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span>   </span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Loadings on PC1 and PC2"</span>, <span class="at">x =</span> <span class="st">"Element"</span>, <span class="at">y =</span> <span class="st">"Loading"</span>) <span class="sc">+</span>   <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/visualize%20loadings-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ok, I was pretty close, but I think for my next steps I will include my <strong>K</strong> and <strong>V</strong> (from PC1 with high values that were not Zr and Ti) and <strong>Cs</strong> and <strong>Te</strong>, (the highest values from PC2 and negatively correlated). I will include Zr and Ti again, just to see how they compare with these new elements.</p>
+<p>This next step will be to run a regression analysis on these elements to understand their relationship to d50 (median grain size).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(d50 <span class="sc">~</span> K <span class="sc">+</span> Te <span class="sc">+</span> Cs <span class="sc">+</span> V <span class="sc">+</span> Zr <span class="sc">+</span> Ti, <span class="at">data =</span> chicama_combined) </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = d50 ~ K + Te + Cs + V + Zr + Ti, data = chicama_combined)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-80.719 -34.131   1.722  15.874 124.382 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 440.60759  657.26363   0.670    0.528
+K            -0.02839    0.03187  -0.891    0.407
+Te            4.75048    2.99680   1.585    0.164
+Cs           -5.30497    6.53988  -0.811    0.448
+V             0.20550    1.60163   0.128    0.902
+Zr           -0.40675    0.57344  -0.709    0.505
+Ti            0.01312    0.06756   0.194    0.852
+
+Residual standard error: 86.19 on 6 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.5245,    Adjusted R-squared:  0.04902 
+F-statistic: 1.103 on 6 and 6 DF,  p-value: 0.4541</code></pre>
+</div>
+</div>
+<p>It appears that perhaps I don’t have enough samples for this type of analysis to be accurate. I received an adjusted r-squared value of 0.04 and a p-value of 0.5, which means none of these variables can be used to accurately predict grain size. I think I will pivot to using a cluster analysis to see if multiple concentrations can group samples into groups based on some shared traits which may be grain size or a different parameter. This way I can try to pick out trends in the few samples I have until I collect more field data this summer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>cluster_data <span class="ot">&lt;-</span> chicama_combined <span class="sc">|&gt;</span>    </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sample_norm, Si, Ti, Al, Zr, Sr, Ca, Mo, Rb, Se, W, Co, Cr, V, Sc, K, Ba, Cs, Bi, Te, Sb, Sn, Pd, Nb, P, Cl, Mg ) <span class="sc">|&gt;</span>    </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()  </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>valid_ids <span class="ot">&lt;-</span> chicama_combined<span class="sc">$</span>sample_norm  </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># standardize the data  </span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>cluster_data_scaled <span class="ot">&lt;-</span> <span class="fu">scale</span>(cluster_data <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>sample_norm))  </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">#clustering </span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>dist_mat <span class="ot">&lt;-</span> <span class="fu">dist</span>(cluster_data_scaled) </span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(dist_mat, <span class="at">method =</span> <span class="st">"ward.D2"</span>) </span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">k =</span> <span class="dv">3</span>) </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cluster_data_scaled) <span class="ot">&lt;-</span> valid_ids </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(cluster_data_scaled, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)   </span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sample_norm =</span> valid_ids,                         </span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Cluster =</span> <span class="fu">factor</span>(clusters))  </span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_ind</span>(pca_result,              </span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">geom.ind =</span> <span class="fu">c</span>(<span class="st">"point"</span>, <span class="st">"text"</span>),              </span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.ind =</span> plot_data<span class="sc">$</span>Cluster,              </span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"all"</span>,              </span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">palette =</span> <span class="st">"Set2"</span>,              </span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">addEllipses =</span> <span class="cn">TRUE</span>,              </span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">legend.title =</span> <span class="st">"Cluster"</span>,              </span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Too few points to calculate an ellipse</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/cluster%20analysis%20xrf-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is a lot more helpful - <strong>here, the samples are clustered based on similarities in elemental concentrations.</strong> The outlier (A7) is sand from the beach, visibly different in color, texture and mineralogy, so that validates why it is such an outlier. Now, we can see if there are any similarities in grain sizes between the clusters or if elemental concentrations point to something else.</p>
 </section>
 <section id="hypotheses-and-tests" class="level2">
 <h2 class="anchored" data-anchor-id="hypotheses-and-tests">Hypotheses and Tests</h2>
-<p>State hypotheses about your data and describe how you will use tests to test the hypotheses</p>
-<p>Put code to implement the analysis and hypothesis tests, and include interpretations of thee</p>
+<p>Now that my samples are clustered, I would like to find out their relationships.</p>
 <section id="hypotheses" class="level3">
 <h3 class="anchored" data-anchor-id="hypotheses">Hypotheses</h3>
-<p>State your hypothesis or hypotheses</p>
-</section>
-<section id="methods" class="level3">
-<h3 class="anchored" data-anchor-id="methods">Methods</h3>
-<p>Describe the methods you’ll use to analyze your data in preparation for testing hypotheses. Include the analysis code.</p>
+<p>My first set of hypothesis will be reflecting the relationships between grain size and these geochemical clusters:</p>
+<p><strong>Ha1</strong>: <em>The clay/silt from the samples (d5) will be significantly different between the clusters.</em></p>
+<p><strong>Ha2</strong>: <em>The median grain size from the samples (d50) will be significantly different between the clusters.</em></p>
+<p><strong>Ha3:</strong> <em>The coarser fraction (sand) from the samples (d95) will be significantly different between the clusters.</em></p>
+<p><strong>Ha0</strong>: <em>There is no significant difference between grain size and these geochemical clusters</em></p>
+<p>My second set of hypothesis are regarding the geochemical composition between the clusters. For this hypothesis I will be using the same elements from the regression analysis ( K, Te, Cs, V, Ti, Zr, Si, K):</p>
+<p><strong>Hb1:</strong> <em>The lower concentration elements (Te, Cs, V, Zr) will be significantly different between clusters 1 &amp; 2.</em></p>
+<p><strong>Hb2:</strong> <em>The higher concentration elements (Ti, Si, K) will be significantly different between clusters 1 &amp; 2.</em></p>
+<p><strong>Hb0</strong>: <em>There will be no significant difference between these elements and the geochemical clusters</em></p>
+<p>To test these hypothesis, I will be using a kruskal wallis test for this non-parametric data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>chicama_combined<span class="sc">$</span>Cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(clusters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="hypothesis-tests" class="level3">
 <h3 class="anchored" data-anchor-id="hypothesis-tests">Hypothesis Tests</h3>
-<p>Details about the hypothesis tests, including code</p>
+<p>Here is the code to test H1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># d5 is the 5th percentile of size (clay and silt) </span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kruskal.test</span>(d5 <span class="sc">~</span> Cluster, <span class="at">data =</span> chicama_combined)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  d5 by Cluster
+Kruskal-Wallis chi-squared = 5.2308, df = 2, p-value = 0.07314</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># d50 is the 50th percentile (median) of size </span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kruskal.test</span>(d50 <span class="sc">~</span> Cluster, <span class="at">data =</span> chicama_combined)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  d50 by Cluster
+Kruskal-Wallis chi-squared = 5.2198, df = 2, p-value = 0.07354</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># d95 is the 95th percentile of size (fine-medium sand) </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kruskal.test</span>(d95 <span class="sc">~</span> Cluster, <span class="at">data =</span> chicama_combined)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  d95 by Cluster
+Kruskal-Wallis chi-squared = 6.7692, df = 2, p-value = 0.03389</code></pre>
+</div>
+</div>
+<p>If I use a p-value of <strong>0.05</strong> for statistical significance, I reject the null hypothesis and accept <strong>Ha3,</strong> that there is some significant difference between these clusters and the sand size 95th percentile of my samples. I cannot reject the null hypothesis for my other two alternate hypothesis (Ha1 &amp; Ha2), as they are both above the 0.05 p-value threshold.</p>
+<p>Here is a visualization of the relationship between d95 and these clusters</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined, <span class="fu">aes</span>(<span class="at">x =</span> Cluster, <span class="at">y =</span> d95, <span class="at">fill =</span> Cluster)) <span class="sc">+</span>   </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">outlier.shape =</span> <span class="dv">21</span>, <span class="at">outlier.fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span>     </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span>   </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"D95 grain size by Cluster"</span>,       </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Cluster"</span>, </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"D95 grain size (um)"</span>) <span class="sc">+</span>   </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/d95%20and%20cluster%20box%20plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This visual shows that d95 is discrete between the clusters. With more samples, this should be interesting to see how this holds up.</p>
+<p>The next tests will be in a similar fashion using a kruskal wallis test to understand the relationship between the elements I identified as having high PCA loadings from the earlier analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>elements <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Si"</span>, <span class="st">"Zr"</span>, <span class="st">"K"</span>, <span class="st">"Ti"</span>, <span class="st">"V"</span>, <span class="st">"Cs"</span>, <span class="st">"Te"</span>)   </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(elements, <span class="cf">function</span>(var) {   </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  test <span class="ot">&lt;-</span> <span class="fu">kruskal.test</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(var, <span class="st">"~ Cluster"</span>)),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> chicama_combined) </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Element =</span> var, <span class="at">p_value =</span> test<span class="sc">$</span>p.value) })  </span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Element     p_value
+1      Si 0.094508205
+2      Zr 0.007805387
+3       K 0.126824507
+4      Ti 0.144240316
+5       V 0.126824507
+6      Cs 0.006771057
+7      Te 0.003476377</code></pre>
+</div>
+</div>
+<p>The results here are interesting- If I use a p-value of 0.05, I cannot reject the null hypothesis because the p-values of the higher concentration elements (Si, Ti, K) are all above 0.05 and one element from the small concentration group (V) is much larger than 0.05. However, it should be noted that the other smaller concentration elements (Te, Cs, and Zr) all are much lower than the 0.05 p-value. So for them, I can say that there is a significant difference between the concentration of elements Te, Cs, and Zr and the clusters.</p>
+<p>Here is a visual that shows these elements and their relationship to the clusters:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined, <span class="fu">aes</span>(<span class="at">x =</span> Cluster, <span class="at">y =</span> Te, <span class="at">fill =</span> Cluster)) <span class="sc">+</span>   </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">outlier.shape =</span> <span class="dv">21</span>, <span class="at">outlier.fill =</span> <span class="st">"white"</span>) <span class="sc">+</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Pastel1"</span>) <span class="sc">+</span>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span>  </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Te conc. by Cluster"</span>,        </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Cluster"</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Te concentration (ppm)"</span>) <span class="sc">+</span>   </span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/geochem%20boxplots-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined, <span class="fu">aes</span>(<span class="at">x =</span> Cluster, <span class="at">y =</span> Cs, <span class="at">fill =</span> Cluster)) <span class="sc">+</span>   </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">outlier.shape =</span> <span class="dv">21</span>, <span class="at">outlier.fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Pastel2"</span>) <span class="sc">+</span>    </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span>   </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cs conc. by Cluster"</span>,        </span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Cluster"</span>, </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cs concentration (ppm)"</span>) <span class="sc">+</span>   </span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/geochem%20boxplots-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chicama_combined, <span class="fu">aes</span>(<span class="at">x =</span> Cluster, <span class="at">y =</span> Zr, <span class="at">fill =</span> Cluster)) <span class="sc">+</span>   </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">outlier.shape =</span> <span class="dv">21</span>, <span class="at">outlier.fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark1"</span>) <span class="sc">+</span>     </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span>   </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Zr conc. by Cluster"</span>,        </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Cluster"</span>, </span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Zr concentration (ppm)"</span>) <span class="sc">+</span>   </span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unknown palette: "Dark1"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="semester-project_files/figure-html/geochem%20boxplots-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="results-and-discussion" class="level3">
 <h3 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h3>
-<p>Results from your hypothesis tests and discussion, interpreting your results</p>
+<p>The results from the hypothesis tests show that even though this data does not correlate with many of the standard ways to relate grain size to geochemical signatures from the samples, there is plenty of other ways to see the relationship in the data. While this analysis was hampered by the low number of samples available, It’s good to see that the data does have a few trends and hopefully these will be more clear as I add to the samples in subsequent field seasons.</p>
+<p>It makes sense that it would be hard to pull relationships from the high concentration elements like silica and titanium. Since there is such few samples, the differences are exaggerated. For grain size relationships, I think their groupings may be more complex. In the region I study, there are multiple ways that deposition occurs: through human canal networks distributing fine (clay and sand) sediments and El Nino flooding, which can move all types of grain sizes, and the relative contribution to sedimentation from each of these means is unknown. This may be the first step in trying to identify some of these relationships.</p>
 </section>
 </section>
 <section id="conclusions" class="level2">
 <h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
-<p>What did you learn? What results would a reader be interested in? What would be the next steps if you were to continue studying this data after the end of the semester?</p>
+<p>This was a valuable exercise in testing established assumptions- There are many ways that grain size can be reflected in geochemistry- but in my samples from the Chicama Valley, Peru, these relationships do not show up well, potentially for a number of reasons. I had to pivot to see how these geochemical signatures relate amongst the samples and then try grain size relationships with those groups to establish their relationship. It was rewarding to see that the sand is better reflecting of these geochemical signatures, and I will continue to pursue why the silt and clay do not follow suit, although I have an idea that it may be due to the different depositional regimes (humans and El Nino). As far as geochemistry goes, identifying which elements are found in the different groups is the first step of sediment tracing. Once I identify the spatial locations of the samples and clusters, I can begin to see how the geochemistry can be used to trace back the sediment to its source locations. This will be paramount in my research that looks at erosion and land-use of the upper catchment of this river system. For the future, I will need to add more samples to this collection to better establish these relationships.</p>
 </section>
 
 </main>

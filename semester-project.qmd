@@ -1,13 +1,9 @@
 ---
-title: "Put the title of your project here"
+title: "Geochemical and Grain size relationships from the Chicama Valley, Peru"
 subtitle: "EES 4891/5891: Probability and Statistics for Geosciences"
-author: "Put your name here"
+author: "Thomas Ulrich"
 date: last-modified
 ---
-
-## Setup
-
-Set up R environment by loading the necessary libraries
 
 ```{r setup}
 #| message: false
@@ -17,58 +13,434 @@ Set up R environment by loading the necessary libraries
 library(knitr)
 library(scales)
 library(tidyverse)
-
+library(knitr)
+library(psych)
 # maybe include other libraries:
-# library(tidymodels)
+library(readxl)
+library(rlang)
+library(factoextra)
+library(RColorBrewer)
 
 # set up default plotting format for ggplot2 graphs
 theme_set(theme_bw())
+
 ```
 
 ## Introduction
 
-Write the introduction: describe what data you're going to study, why you're interested in it, where you obtained the data, and any other relevant background.
+I have generated XRF data from 12 samples of sediment at various depths from the Holocene stratigraphy of Chicama Valley in Peru (sink samples). Four sediment samples were collected from source areas in the highlands of the Andes. I also ran grain size analysis on these samples so I can pick out patterns for how this material is being sorted in the natural landscape and how that relates to the geochemical data. I am trying to quantify different geochemical signatures of the source-to-sink system, as it has many implications for archeology research in this region (one of the six regions that civilization developed independently). It also has implications for agricultural sustainability, since these cultures have been cultivating this land for many millennia without degrading the soil.
 
-### Date set
+### Data set
 
-Describe your data set: what data are you looking at? Where did you get it from (cite publications if relevant), etc. Describe what the data is: what variables are measured, how many observations (rows in a data table) does it contain, etc.
+The XRF data consists of 18 rows, each row representing one of the 16 samples, with two rows of standards. There are 110 columns, 10 for metadata, 50 with a count in ppm of the concentration of each element that the XRF analysis tests for and 50 for the error of each elemental concentration. The grain size data is similarly narrow and long, but each sample has three measurements and an average (four total measurements per sample). The columns for this data set contain information on the proportion of each grain size relative to the total number of grains (out of 100) in a sample and the percentile information, which gives grain size at D5, D16, D25, D50, D75, D84, D95 and the mode grain size of each sample in μm.
 
-You may want to incude code to read the data in.
+The data has column names that are too clunky for coding, so I will start by changing the column names of my spreadsheets and removing the unnecessary columns.
+
+```{r clean data}
+
+chicama_seds <- read_excel("Chicama_020325_grainsize.xlsx") 
+# rename the columns in chicama seds   
+rename_cols <- c(   
+#  'phi_10.8' = 'Result In Range  (0.49,0.69) μm',    
+  'phi_9.2' = 'Result In Range  (0.69,0.98) μm',     
+  'phi_8.7' = 'Result In Range  (0.98,1.38) μm',     'phi_8.2' = 'Result In Range  (1.38,1.95) μm',     'phi_7.7' = 'Result In Range  (1.95,2.76) μm',     'phi_7.2' = 'Result In Range  (2.76,3.91) μm',     'phi_6.7' = 'Result In Range  (3.91,5.52) μm',     'phi_6.2' = 'Result In Range  (5.52,7.81) μm',     'phi_5.7' = 'Result In Range  (7.81,11.05) μm',     'phi_5.2' = 'Result In Range  (11.05,15.63) μm',     'phi_4.7' = 'Result In Range  (15.63,22.10) μm',     'phi_4.2' = 'Result In Range  (22.10,31.25) μm',     'phi_3.7' = 'Result In Range  (31.25,44.19) μm',     'phi_3.2' = 'Result In Range  (44.19,62.50) μm',     'phi_2.7' = 'Result In Range  (62.50,88.39) μm',     'phi_2.2' = 'Result In Range  (88.39,125.00) μm',     'phi_1.7' = 'Result In Range  (125.00,176.78) μm',     'phi_1.2' = 'Result In Range  (176.78,250.00) μm',     'phi_0.7' = 'Result In Range  (250.00,353.55) μm',     'phi_0.2' = 'Result In Range  (353.55,500.00) μm',     'phi_-0.3' = 'Result In Range  (500.00,707.00) μm',     'phi_-1.0' = 'Result In Range  (707.00,1000.00) μm',     'phi_-1.3' = 'Result In Range  (1000.00,1190.00) μm',     'phi_-1.5' = 'Result In Range  (1190,1410) μm',     'phi_-1.7' = 'Result In Range  (1410,1630) μm',     'phi_-2.0' = 'Result In Range  (1630,2000) μm',     'phi_-2.3' = 'Result In Range  (2000,2380) μm',     'phi_-2.5' = 'Result In Range  (2380,2830) μm',     'phi_-2.7' = 'Result In Range  (2830,3360) μm',     'sample' = 'Sample Name',     'index' = 'Index',     'd32' = 'D [3,2]',     'mean_size' = 'mean_grain_size',     'd5' = 'Dx (5)',     'd16' = 'Dx (16)',     'd25' = 'Dx (25)',     'd50' = 'Dx (50)',     'd75' = 'Dx (75)',     'd84' = 'Dx (84)',     'd95' = 'Dx (95)',     'mode' = 'Mode'      ) 
+# Use dplyr's rename function to selectively rename columns 
+chicama_seds <- chicama_seds %>% rename(   'phi_10.8' = 'Result In Range  (0.49,0.69) μm' )  
+
+#assign column names
+chicama_seds <- chicama_seds |> rename(!!!rename_cols)  ## select the average grain size distribution of each sample 
+chicama_seds <- chicama_seds[grepl("_AVG", chicama_seds$sample, ignore.case = TRUE), ]  
+## XRF DATA######################################################  
+chicama_xrf <- read_excel("Chicama112324_xrf.xlsx")  ##rename columns 
+
+chicama_xrf <- chicama_xrf |> select(-'Reading No', -LOCATION, -INSPECTOR, -MISC, -NOTE)  
+chicama_xrf <- chicama_xrf %>% select(-Time) 
+chicama_xrf <- chicama_xrf %>% select(-Type, -Sequence, -Flags, -Duration, -Index, -'XL3-76048')  
+```
+
+Now that we have friendly column names, we can move on to the descriptive statistics of this data.
 
 ## Descriptive Statistics
 
-Put code and text to calculate and present descriptive statistics for your data. This should include histograms and kernel-density plots of the distribution of each variable you will be studying. If you have multivariate data, a pairs plot is helpful for showing the correlations and covariance between different variables.
+First I will look at the statistics of the sediment grain sizes
 
-Describe the probability distribution of the data: is it normal or some other distribution? Histograms and Q-Q plots can be helpful here.
+```{r descriptive statistics seds}
+
+chicama_seds_stats <- chicama_seds |> select(-matches("phi", ignore.case = TRUE), -c(...3, index,sample,d32)) 
+kable(describe(chicama_seds_stats), digits = 2)
+```
+
+It looks like these samples are mostly in the silt to fine sand category (these measurements are in um).
+
+For the XRF data statistics, I am removing the elements that are reactive in the environment and will not be helpful for sediment tracing.
+
+```{r descriptive statistics xrf}
+
+chicama_xrf_stats <- chicama_xrf |> select(-matches("error", ignore.case = TRUE), -c(Units,SAMPLE,Mn,Fe,Zn,Cu,Cd,Ag,Pb,Ni,As,Re,Ta,Hf))  
+
+chicama_xrf_stats <- chicama_xrf_stats[-c(1, 12), ]   
+
+chicama_xrf_statssheet <- describe(chicama_xrf_stats) 
+
+kable(chicama_xrf_statssheet, digits = 2)  
+
+chicama_Si_avg = (chicama_xrf_statssheet$mean[30] - chicama_xrf$Si[1])/ chicama_xrf$Si[1]
+chicama_Al_avg = (chicama_xrf_statssheet$mean[28] - chicama_xrf$Al[1])/ chicama_xrf$Al[1]
+chicama_Ti_avg = (chicama_xrf_statssheet$mean[14] - chicama_xrf$Ti[1])/ chicama_xrf$Ti[1] 
+Ti_median = (chicama_xrf_statssheet$median[14] - chicama_xrf$Ti[1])/ chicama_xrf$Ti[1]
+Zr_avg = (chicama_xrf_statssheet$mean[2] - chicama_xrf$Zr[1])/ chicama_xrf$Zr[1]
+```
+
+**XRF data**
+
+I will be taking a look at how some of the elemental data compares to the NIST Standard. When standardized, I have values for Si = `r chicama_Si_avg` , Al = `r chicama_Al_avg`, Ti = `r chicama_Ti_avg`, and Zr = `r Zr_avg`. It's interesting that all three of the mean elemental concentrations in my samples are above the standard. Ti is the closest mean to the standard- lets check out its median compared to the standard: `r Ti_median` ... That is also close to 0, and so represents the standard well. Now, some kernel density estimates of the main variables I'll be using.
+
+```{r Kernel Density Estimate XRF}
+chicama_xrf_kde <- chicama_xrf_stats %>%   select(Si, Ti, Al,  Zr) |>    
+  pivot_longer(cols = everything(), names_to = "Element", values_to = "Value")   
+
+ggplot(chicama_xrf_kde, aes(x = Value, fill = Element, color = Element)) +   geom_density(alpha = 0.4, linewidth = 1) +   
+  facet_wrap(~Element, scales = "free")+
+  theme_minimal() +   
+  labs(title = "Kernel Density Estimates of Si, Ti, Al, and Zr",
+       x = "Concentration (ppm)",        
+       y = "Density") +   
+  scale_fill_brewer(palette = "Set2") +   
+  scale_color_brewer(palette = "Set2")
+```
+
+It looks like Ti and Zr have a very similar KDE plots, both have high, narrow peaks, meaning the values do not vary widely between samples. This is opposite for the Si and Al kernel densities, as these values vary more widely.
+
+**Grain Size**
+
+I would like to run this same analysis on the mean grain size of my samples. Here are the kernel density estimates of my 13 samples:
+
+```{r KDE grain size}
+
+chicama_seds_kde <- chicama_seds  |>    select(mean_size) |>    
+  pivot_longer(cols = everything(), names_to = "value", values_to = "Size")   
+
+
+ggplot(chicama_seds_kde, aes(x = Size, fill = value, color = value)) +   geom_density(alpha = 0.4, linewidth = 1) +  
+  theme_minimal() +   
+  labs(title = "Kernel Density Estimates of Grain Size",       
+       x = "Grain size in um",       
+       y = "Density") +   
+  scale_fill_brewer(palette = "Set1") +   
+  scale_color_brewer(palette = "Set1")
+```
+
+This plot shows the wide distribution of sizes. This may be due to the low number of samples, but I would like to compare the grain size for different proxies for grain size to see their correlation. I think it will be best to combine these two separate spreadsheets since they both contain information for the same 16 samples (A1, A2, etc).
+
+```{r combine spreadsheets}
+# Remove suffixes for matching 
+chicama_seds$sample_norm <- gsub("_CHICAMA_AVG", "", chicama_seds$sample)
+
+chicama_xrf$sample_norm <- gsub("_CHICAMA", "", chicama_xrf$SAMPLE)  
+
+# Get a normalized sample name 
+chicama_combined <- merge(chicama_xrf, chicama_seds, by = "sample_norm", all.x = TRUE)  
+
+#remove the standard readings from the XRF data 
+chicama_combined <- chicama_combined[-c(17, 18), ] 
+
+#only select the columns I want for correlation 
+
+chicama_combined_corr <- chicama_combined |> select(c(Si, Ti, Zr, Al, mean_size, d50, sample_norm))  
+#add columns for the grain_size proxy ratios 
+chicama_combined_corr <- chicama_combined_corr |>   
+  mutate(     Ti_Si = Ti / Si,    
+              Al_Si = Al / Si,     
+              Ti_Zr = Ti / Zr   )
+```
+
+I have included the ratios because they should hopefully be able to correlate elemental concentrations to grain size. high ratios should show a high proportion of fine material (clays) compared with low values that should correlate to coarser samples. Now, let's plot their 2D density plot to show how they correlate.
+
+```{r 2D density plots}
+##Si/Ti against grain size 
+ggplot(chicama_combined_corr, aes(x = Ti_Si, y = mean_size)) +   geom_density_2d_filled() +   
+  geom_point(color = "red", alpha = 1, size = 1) +   
+  scale_fill_viridis_d() +   
+  scale_x_continuous(expand = c(0,0)) +   
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Ti/Si vs Grain Size",        
+       x = "Ti/Si Ratio",
+       y = "Grain Size (um)") 
+
+##Zr/Ti against mean grain size 
+ggplot(chicama_combined_corr, aes(x = Ti_Zr, y = mean_size)) +   geom_density_2d_filled() +   
+  geom_point(color = "red", alpha = 1, size = 1) +   
+  scale_fill_viridis_d( option = "magma") +   
+  scale_x_continuous(expand = c(0,0)) +   
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Zr/Ti vs Grain Size",       
+       x = "Ti/Zr Ratio", 
+       y = "Grain Size (um)")  
+
+##Al/Si against mean grain size 
+ggplot(chicama_combined_corr, aes(x = Al_Si, y = mean_size)) +   geom_density_2d_filled() +  
+  geom_point(color = "red", alpha = 1, size = 1) +  
+  scale_fill_viridis_d( option = "turbo") +   
+  scale_x_continuous(expand = c(0,0)) +   
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Al_Si vs Grain Size",        
+       x = "Al_Si Ratio", 
+       y = "Grain Size (um)")
+```
+
+These do not show a great relationship at all! Maybe plotting them versus median grain size will be better:
+
+```{r median grain size correlations}
+
+##Si/Ti against grain size 
+ggplot(chicama_combined_corr, aes(x = Ti_Si, y = d50)) +   
+  geom_density_2d_filled() +   
+  geom_point(color = "red", alpha = 1, size = 1) +  
+  scale_fill_viridis_d() +   
+  scale_x_continuous(expand = c(0,0)) +   
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Si/Ti vs Grain Size (Median)",       
+       x = "Si/Ti Ratio", 
+       y = "Grain Size (um)")  
+
+##Zr/Ti against mean grain size 
+ggplot(chicama_combined_corr, aes(x = Ti_Zr, y = d50)) +   
+  geom_density_2d_filled() +   
+  geom_point(color = "red", alpha = 1, size = 1) +   
+  scale_fill_viridis_d( option = "magma") +  
+  scale_x_continuous(expand = c(0,0)) +  
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Zr/Ti vs Grain Size (median)",       
+       x = "Zr/Ti Ratio", 
+       y = "Grain Size (um)")  
+
+##Al/Si against mean grain size 
+ggplot(chicama_combined_corr, aes(x = Al_Si, y = d50)) +   
+  geom_density_2d_filled() +   
+  geom_point(color = "red", alpha = 1, size = 1) +  
+  scale_fill_viridis_d( option = "turbo") +   
+  scale_x_continuous(expand = c(0,0)) +   
+  scale_y_continuous(expand = c(0,0)) +   
+  theme_minimal() +   
+  labs(title = "2D Density of Al_Si vs Grain Size (median)",       
+       x = "Al_Si Ratio", 
+       y = "Grain Size (um)")
+```
+
+These ratios still show very weak correlation. How should I find which elements correlate to grain size? I think I will try to uncover that question with this project.
 
 ## Research Questions
 
-This is a place to describe the research questions you want to ask about your data.
+For this project, I'd like to test how different elements are related to grain size. Specifically, how well elemental concentrations of non reactive elements in the soil samples correlate with average grain size from each sample. For this, I will be running a principal component analysis (PCA) on multiple elements and comparing them to the different size fractions of grains (clay/silt, fine sand, and sand).
 
-It's helpful to use tables and/or graphs to illustrate what you're thinking about and what questions you want to ask.
+```{r PCA}
+#create categories for grain size 
+chicama_combined <- chicama_combined |>    
+  mutate(GrainSizeCategory = case_when(     
+    d50 < 63 ~ "Clay/Silt",              
+    d50 < 200 ~ "Fine Sand",          
+    d50 < 500 ~ "Medium Sand",          
+    TRUE ~ "N/A"   )) 
+
+## #Select  geochemical columns
+pca_data <- chicama_combined |>    
+  select(Si, Ti, Al, Zr, Sr, Ca, Mo, Rb, Se, W, Co, Cr, V, Sc, K, Ba, Cs,           Bi, Te, Sb, Sn, Pd, Nb, P, Cl, Mg )    
+
+# Standardize the data  
+pca_data_scaled <- scale(pca_data)  
+
+#  Run PCA 
+pca_result <- prcomp(pca_data_scaled, center = TRUE, scale. = TRUE )  
+
+# graphs 
+fviz_pca_biplot(pca_result,                  
+                label = "var",                 
+                habillage = chicama_combined$GrainSizeCategory,
+                addEllipses = TRUE,                 
+                palette = "Set2",                 
+                repel = TRUE)
+```
+
+After analyzing the output from the PCA, I think I will now test the elements with the longer arrows in the direction of the fine sands **Sn**, and **Te.** I will also test two variables with a stronger direction in the clay/silt direction: **Sc** and **Mo.** This allows me four possible elements positively and negatively correlated with different grain sizes according to the PCA output.
+
+By plotting the outputs of the PCA (loadings), this will give us a better idea if these were the best choices
+
+```{r visualize loadings}
+loadings <- as.data.frame(pca_result$rotation)  
+
+# Add element names as a column 
+loadings$Element <- rownames(loadings)  
+loadings_long <- loadings |>    
+  select(Element, PC1, PC2) |>    
+  pivot_longer(cols = starts_with("PC"), names_to = "Component", values_to = "Loading")  
+
+  ggplot(loadings_long, aes(x = reorder(Element, Loading), y = Loading, fill = Component)) +   
+    geom_col() +   
+    coord_flip() +   
+    facet_wrap(~ Component, scales = "free_x") +   
+    labs(title = "Loadings on PC1 and PC2", x = "Element", y = "Loading") +   theme_minimal()
+```
+
+Ok, I was pretty close, but I think for my next steps I will include my **K** and **V** (from PC1 with high values that were not Zr and Ti) and **Cs** and **Te**, (the highest values from PC2 and negatively correlated). I will include Zr and Ti again, just to see how they compare with these new elements.
+
+This next step will be to run a regression analysis on these elements to understand their relationship to d50 (median grain size).
+
+```{r regression analysis}
+model1 <- lm(d50 ~ K + Te + Cs + V + Zr + Ti, data = chicama_combined) 
+summary(model1)
+```
+
+It appears that perhaps I don't have enough samples for this type of analysis to be accurate. I received an adjusted r-squared value of 0.04 and a p-value of 0.5, which means none of these variables can be used to accurately predict grain size. I think I will pivot to using a cluster analysis to see if multiple concentrations can group samples into groups based on some shared traits which may be grain size or a different parameter. This way I can try to pick out trends in the few samples I have until I collect more field data this summer.
+
+```{r cluster analysis xrf}
+cluster_data <- chicama_combined |>    
+  select(sample_norm, Si, Ti, Al, Zr, Sr, Ca, Mo, Rb, Se, W, Co, Cr, V, Sc, K, Ba, Cs, Bi, Te, Sb, Sn, Pd, Nb, P, Cl, Mg ) |>    
+  na.omit()  
+
+valid_ids <- chicama_combined$sample_norm  
+# standardize the data  
+cluster_data_scaled <- scale(cluster_data |> select(-sample_norm))  
+
+#clustering 
+dist_mat <- dist(cluster_data_scaled) 
+hc <- hclust(dist_mat, method = "ward.D2") 
+clusters <- cutree(hc, k = 3) 
+rownames(cluster_data_scaled) <- valid_ids 
+
+pca_result <- prcomp(cluster_data_scaled, center = TRUE, scale. = TRUE)   
+plot_data <- data.frame(sample_norm = valid_ids,                         
+                        Cluster = factor(clusters))  
+
+fviz_pca_ind(pca_result,              
+             geom.ind = c("point", "text"),              
+             col.ind = plot_data$Cluster,              
+             label = "all",              
+             palette = "Set2",              
+             addEllipses = TRUE,              
+             legend.title = "Cluster",              
+             repel = TRUE)
+```
+
+This is a lot more helpful - **here, the samples are clustered based on similarities in elemental concentrations.** The outlier (A7) is sand from the beach, visibly different in color, texture and mineralogy, so that validates why it is such an outlier. Now, we can see if there are any similarities in grain sizes between the clusters or if elemental concentrations point to something else.
 
 ## Hypotheses and Tests
 
-State hypotheses about your data and describe how you will use tests to test the hypotheses
-
-Put code to implement the analysis and hypothesis tests, and include interpretations of thee
+Now that my samples are clustered, I would like to find out their relationships.
 
 ### Hypotheses
 
-State your hypothesis or hypotheses
+My first set of hypothesis will be reflecting the relationships between grain size and these geochemical clusters:
 
-### Methods
+**Ha1**: *The clay/silt from the samples (d5) will be significantly different between the clusters.*
 
-Describe the methods you'll use to analyze your data in preparation for testing hypotheses. Include the analysis code.
+**Ha2**: *The median grain size from the samples (d50) will be significantly different between the clusters.*
+
+**Ha3:** *The coarser fraction (sand) from the samples (d95) will be significantly different between the clusters.*
+
+**Ha0**: *There is no significant difference between grain size and these geochemical clusters*
+
+My second set of hypothesis are regarding the geochemical composition between the clusters. For this hypothesis I will be using the same elements from the regression analysis ( K, Te, Cs, V, Ti, Zr, Si, K):
+
+**Hb1:** *The lower concentration elements (Te, Cs, V, Zr) will be significantly different between clusters 1 & 2.*
+
+**Hb2:** *The higher concentration elements (Ti, Si, K) will be significantly different between clusters 1 & 2.*
+
+**Hb0**: *There will be no significant difference between these elements and the geochemical clusters*
+
+To test these hypothesis, I will be using a kruskal wallis test for this non-parametric data.
+
+```{r cluster to data frame}
+chicama_combined$Cluster <- factor(clusters)
+```
 
 ### Hypothesis Tests
 
-Details about the hypothesis tests, including code
+Here is the code to test H1:
+
+```{r H1 test}
+
+# d5 is the 5th percentile of size (clay and silt) 
+kruskal.test(d5 ~ Cluster, data = chicama_combined)  
+# d50 is the 50th percentile (median) of size 
+kruskal.test(d50 ~ Cluster, data = chicama_combined)  
+# d95 is the 95th percentile of size (fine-medium sand) 
+kruskal.test(d95 ~ Cluster, data = chicama_combined)
+```
+
+If I use a p-value of **0.05** for statistical significance, I reject the null hypothesis and accept **Ha3,** that there is some significant difference between these clusters and the sand size 95th percentile of my samples. I cannot reject the null hypothesis for my other two alternate hypothesis (Ha1 & Ha2), as they are both above the 0.05 p-value threshold.
+
+Here is a visualization of the relationship between d95 and these clusters
+
+```{r d95 and cluster box plot}
+
+ggplot(chicama_combined, aes(x = Cluster, y = d95, fill = Cluster)) +   
+  geom_boxplot(color = "black", outlier.shape = 21, outlier.fill = "white") +
+  scale_fill_brewer(palette = "Dark2") +     
+  theme_minimal(base_size = 14) +   
+  labs(title = "D95 grain size by Cluster",       
+       x = "Cluster", 
+       y = "D95 grain size (um)") +   
+  theme(legend.position = "none")
+```
+
+This visual shows that d95 is discrete between the clusters. With more samples, this should be interesting to see how this holds up.
+
+The next tests will be in a similar fashion using a kruskal wallis test to understand the relationship between the elements I identified as having high PCA loadings from the earlier analysis.
+
+```{r geochem kruskal wallis}
+elements <- c("Si", "Zr", "K", "Ti", "V", "Cs", "Te")   
+results <- lapply(elements, function(var) {   
+  test <- kruskal.test(as.formula(paste(var, "~ Cluster")),
+                       data = chicama_combined) 
+  data.frame(Element = var, p_value = test$p.value) })  
+
+do.call(rbind, results)
+  
+```
+
+The results here are interesting- If I use a p-value of 0.05, I cannot reject the null hypothesis because the p-values of the higher concentration elements (Si, Ti, K) are all above 0.05 and one element from the small concentration group (V) is much larger than 0.05. However, it should be noted that the other smaller concentration elements (Te, Cs, and Zr) all are much lower than the 0.05 p-value. So for them, I can say that there is a significant difference between the concentration of elements Te, Cs, and Zr and the clusters.
+
+Here is a visual that shows these elements and their relationship to the clusters:
+
+```{r geochem boxplots}
+ggplot(chicama_combined, aes(x = Cluster, y = Te, fill = Cluster)) +   
+  geom_boxplot(color = "black", outlier.shape = 21, outlier.fill = "white") + 
+  scale_fill_brewer(palette = "Pastel1") +    theme_minimal(base_size = 14) +  
+  labs(title = "Te conc. by Cluster",        
+       x = "Cluster", 
+       y = "Te concentration (ppm)") +   
+  theme(legend.position = "none")  
+
+ggplot(chicama_combined, aes(x = Cluster, y = Cs, fill = Cluster)) +   
+  geom_boxplot(color = "black", outlier.shape = 21, outlier.fill = "white") +
+  scale_fill_brewer(palette = "Pastel2") +    
+  theme_minimal(base_size = 14) +   
+  labs(title = "Cs conc. by Cluster",        
+       x = "Cluster", 
+       y = "Cs concentration (ppm)") +   
+  theme(legend.position = "none")  
+
+ggplot(chicama_combined, aes(x = Cluster, y = Zr, fill = Cluster)) +   
+  geom_boxplot(color = "black", outlier.shape = 21, outlier.fill = "white") +
+  scale_fill_brewer(palette = "Dark1") +     
+  theme_minimal(base_size = 14) +   
+  labs(title = "Zr conc. by Cluster",        
+       x = "Cluster", 
+       y = "Zr concentration (ppm)") +   
+  theme(legend.position = "none")
+```
 
 ### Results and Discussion
 
-Results from your hypothesis tests and discussion, interpreting your results
+The results from the hypothesis tests show that even though this data does not correlate with many of the standard ways to relate grain size to geochemical signatures from the samples, there is plenty of other ways to see the relationship in the data. While this analysis was hampered by the low number of samples available, It's good to see that the data does have a few trends and hopefully these will be more clear as I add to the samples in subsequent field seasons.
+
+It makes sense that it would be hard to pull relationships from the high concentration elements like silica and titanium. Since there is such few samples, the differences are exaggerated. For grain size relationships, I think their groupings may be more complex. In the region I study, there are multiple ways that deposition occurs: through human canal networks distributing fine (clay and sand) sediments and El Nino flooding, which can move all types of grain sizes, and the relative contribution to sedimentation from each of these means is unknown. This may be the first step in trying to identify some of these relationships.
 
 ## Conclusions
 
-What did you learn? What results would a reader be interested in? What would be the next steps if you were to continue studying this data after the end of the semester?
+This was a valuable exercise in testing established assumptions- There are many ways that grain size can be reflected in geochemistry- but in my samples from the Chicama Valley, Peru, these relationships do not show up well, potentially for a number of reasons. I had to pivot to see how these geochemical signatures relate amongst the samples and then try grain size relationships with those groups to establish their relationship. It was rewarding to see that the sand is better reflecting of these geochemical signatures, and I will continue to pursue why the silt and clay do not follow suit, although I have an idea that it may be due to the different depositional regimes (humans and El Nino). As far as geochemistry goes, identifying which elements are found in the different groups is the first step of sediment tracing. Once I identify the spatial locations of the samples and clusters, I can begin to see how the geochemistry can be used to trace back the sediment to its source locations. This will be paramount in my research that looks at erosion and land-use of the upper catchment of this river system. For the future, I will need to add more samples to this collection to better establish these relationships.
