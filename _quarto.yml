@@ -5,3 +5,7 @@ editor: visual
 execute:
   echo: true
   cache: false
+
+format:
+  html:
+    css: "css/grading.css"
